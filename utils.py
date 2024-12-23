@@ -110,7 +110,10 @@ def domain_alignment(list1, list2, embeddings1, embeddings2):
   fitembed = np.matmul(embeddings2, transform)
 
   return fitembed
-
+"""
+This function added for Full/Half coverage and Ncoll/Hindll enzymes data.
+Data shape is not matched for the trained and untrained embeddings.
+"""
 def domain_alignment_filtered(list1, list2, embeddings1, embeddings2):
     idx1 = np.unique(list1[:, 0]).astype(int)
     diff1 = min(idx1[1:] - idx1[:-1])
