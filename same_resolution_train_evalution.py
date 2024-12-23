@@ -3,15 +3,22 @@ from node2vec import Node2Vec
 import utils
 import networkx as nx
 import os
-from models import GATNetSelectiveResidualsUpdated, GATNetSelectiveResiduals, GATNetSameResolutionModel
+from models import GATNetSelectiveResidualsUpdated 
 import torch
 from torch.nn import MSELoss
 from torch.optim import Adam
 from scipy.stats import spearmanr,pearsonr
 import argparse
 import matplotlib.pyplot as plt
+"""
+In same resolution evaluation, node2vec embeddings used for GATNetSelectiveResidualsUpdated model.
+Model trained on list_trained if there is no weight file appear then used that weight to evaluate on list_untrained
+"""
 
 if __name__ == "__main__":
+    """
+    Those two paths created for Data and Output files storage. Data folder include preprocess version of HiC contact map while Output folder include plottings and weights. 
+    """
     if not(os.path.exists('250kb_train_tested_on_250kb/Outputs_GATNetSelectiveResidualsUpdated_lr_0.0001_threshold_1e-8_GM12878')):
         os.makedirs('250kb_train_tested_on_250kb/Outputs_GATNetSelectiveResidualsUpdated_lr_0.0001_threshold_1e-8_GM12878')
 
@@ -112,15 +119,6 @@ if __name__ == "__main__":
 
             mse_loss = criterion(out.float(), truth.float())
             PearsonR, _ = pearsonr(dist_truth.detach().numpy(), dist_out.detach().numpy())
-            #PearsonR_loss = (1 - PearsonR) **2,
-            #PearsonR_loss = -torch.log(torch.tensor(PearsonR + 1e-7))
-            #print(f"PearsonR log loss: {PearsonR_loss}")
-
-            #alpha_initial = 0.1
-            #lambda_scale = 0.1
-            #alpha = min(1.0, alpha_initial * torch.exp(-lambda_scale * mse_loss).item())
-            #print(f"New alpha value: {alpha}")
-            #total_loss = mse_loss + alpha * PearsonR_loss
 
             """
             Contrastive loss penalizes the absolute difference between the predicted and true distances
@@ -142,16 +140,6 @@ if __name__ == "__main__":
             loss_history.append(total_loss.item())
             print(f'Loss: {total_loss}', end='\r')
 
-            # model.train()
-            # optimizer.zero_grad()
-            # out = model(data_trained.x.float(), data_trained.edge_index)
-            # loss = criterion(out.float(), truth.float())
-            # lossdiff = abs(oldloss - loss)
-            # loss.backward()
-            # optimizer.step()
-            # oldloss = loss
-            # print(f'Loss: {loss}', end='\r')
-
         torch.save(model.state_dict(), model_weight_path)
         print(f'Saved trained model corresponding to {filepath_trained} to {model_weight_path}')
 
@@ -167,6 +155,7 @@ if __name__ == "__main__":
         plt.savefig(f'250kb_train_tested_on_250kb/Outputs_GATNetSelectiveResidualsUpdated_lr_0.0001_threshold_1e-8_GM12878/{name_trained}_training_loss_plot.png')
         plt.show()
 
+    # evaluate on same resolution data with trained weight
     model = GATNetSelectiveResidualsUpdated()
     model.load_state_dict(torch.load(model_weight_path))
     model.eval()
