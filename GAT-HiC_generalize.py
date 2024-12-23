@@ -4,8 +4,7 @@ import sys
 import utils
 import networkx as nx
 import os
-from models import GATNetHeadsChanged3LayersLeakyReLUv2, GATNetHeadsChanged3LayersLeakyReLUv2EmbeddingDim256, GATNetHeadsChanged3LayersLeakyReLUv2EmbeddingDim128,GATNetHeadsChanged4LayersLeakyReLU, GATNetHeadsChanged4Layers, GATNetHeadsChangedLeakyReLU
-from models import  GATNetMultiLayer, GATNetHeadsChanged4LayersReLU_LayerNormEmbed512, GATNetHeadsChanged4LayersReLU_LayerNormEmbed512WithResiduals, GATNetSelectiveResidualsUpdatedLayerNorm,GATNetSelectiveResidualsUpdated, GATUNet
+from models import GATNetSelectiveResidualsUpdated
 import torch
 from torch.nn import MSELoss
 from torch.optim import Adam
@@ -14,59 +13,11 @@ import argparse
 import matplotlib.pyplot as plt
 from torch_geometric.nn import GNNExplainer
 
-"""
-grid search options 
-p_values = [0.5, 1, 1.5]
-q_values = [0.5, 1, 2]
-num_walks_values = [10, 25, 50]
-epochs_values = [100, 200, 500]
-learning_rates = [0.0005, 0.001, 0.002]
-
-option 1:
-p=1.5, q=0.5, num_walks=30, walk length: 80, epochs=500, lr=0.001 
-
-option 2:
-p=2, q=0.25, num_walks=25, walk length: 100, epochs=600, lr=0.0008
-
-option 3:
-p=1.75, q=0.4, num_walks=35, walk length: 90, epochs=550, lr=0.0012
-
-option 4:
-p=2, q=0.5, num_walks=40, walk length: 120, epochs=700, lr=0.0005
-
-option 5:
-p=1.6, q=0.3, num_walks=50, walk length: 90, epochs=450, lr=0.001
-
-"""
-
-def calculate_dRMSD(truth_distances, predicted_distances):
-    squared_diff = torch.pow(truth_distances - predicted_distances, 2)  # (y_true - y_pred)^2
-    mean_squared_diff = torch.mean(squared_diff)  # Mean of squared diff
-    dRMSD = torch.sqrt(mean_squared_diff)  # sqrt(mean((y_true - y_pred)^2))
-    return dRMSD.item()
-
-def variance_regularization(predictions, target_variance=0.0025): 
-    prediction_var = predictions.var()
-    variance_penalty = (target_variance - prediction_var).pow(2)
-    return variance_penalty
-
-def entropy_of_predictions(predictions):
-    probs = torch.softmax(predictions, dim=0)
-    entropy = -torch.sum(probs * torch.log(probs + 1e-12))  
-    
-    return entropy
-
-def rmse_loss(predictions, targets):
-    return torch.sqrt(torch.mean((predictions - targets) ** 2) + 1e-12)
-
-def scale_invariant_mse(predictions, targets):
-    predictions = predictions - torch.mean(predictions)
-    targets = targets - torch.mean(targets)
-    
-    si_mse_loss = torch.mean((predictions - targets) ** 2)
-    return si_mse_loss
-
 if __name__ == "__main__":
+    """
+    Those Data and Output folders used to store for preprocessed input values and plottings/weights/pdb files.
+    """
+    
     base_data_dir = 'Data/GATNetSelectiveResidualsUpdated_embedding_512_batch_128_lr_0.001_threshold_1e-8_p_1.75_q_0.4_walk_length_50_num_walks_150_GM12878_generalization_pearson_combined_loss_dynamic_alpha_500kb'
     base_output_dir = 'Generalization_500kb_resolution_GM12878/GATNetSelectiveResidualsUpdated_embedding_512_batch_128_lr_0.001_threshold_1e-8_p_1.75_q_0.4_walk_length_50_num_walks_150_GM12878_generalization_pearson_combined_loss_dynamic_alpha_500kb'
 
@@ -222,17 +173,10 @@ if __name__ == "__main__":
             alpha_initial = 0.1
             alpha = min(1.0, alpha_initial + (1.0 / (mse_loss.item() + 1e-6)))
             total_loss = mse_loss + alpha * PearsonR_loss
-            #total_loss = mse_loss - 0.2 * PearsonR_loss
+            #total_loss = mse_loss - 0.2 * PearsonR_loss # different options for loss function to get sensitivity of the contact maps
     
             loss_diff = abs(old_loss - total_loss.item())
             total_loss.backward()
-
-            #for name, param in model.named_parameters():
-            #    if param.grad is not None:
-            #        gradient = param.grad.cpu().detach().numpy()
-            #        if name not in gradient_history:
-            #            gradient_history[name] = []
-            #        gradient_history[name].append(np.linalg.norm(gradient))
 
             optimizer.step()
             old_loss = total_loss.item()
@@ -245,29 +189,12 @@ if __name__ == "__main__":
             #print(f"  Predicted Distances - Mean: {dist_out.mean().item():.4f}, Std: {dist_out.std().item():.4f}, Min: {dist_out.min().item():.4f}, Max: {dist_out.max().item():.4f}")
             dSCC_history.append(SpRho)
 
-            #dSCC_loss = (1 - SpRho)  # Minimize 1 - dSCC
-            #combined_loss = mse_loss + alpha * dSCC_loss  # Combined loss
-            
-            #if epoch % 10 == 0:
-            #    print(f"Epoch [{epoch}/{epochs}], MSE Loss: {mse_loss.item()}, dSCC: {SpRho}")
-        
             if iteration % print_interval == 0:
                 print(f"Iteration [{iteration}], Total Loss: {mse_loss.item()}, dSCC: {SpRho}, Loss Diff: {loss_diff}")
 
             final_mse_loss = mse_loss.item()
             final_combined_loss = total_loss.item()
             iteration += 1
-
-            #for layer_name, gradients in gradient_history.items():
-            #    plt.figure(figsize=(10, 6))
-            #    plt.plot(gradients, label=f'Gradient Norm: {layer_name}')
-            #    plt.xlabel('Iteration')
-            #    plt.ylabel('Gradient Norm')
-            #    plt.title(f'Gradient Norm for Layer: {layer_name}')
-            #    plt.legend()
-            #    plt.grid(True)
-            #    plt.savefig(f'{base_output_dir}/{layer_name}_gradient_norm.png')
-            #    plt.close()
 
 
         print(f'\nOptimal dSCC after training: {SpRho}')
@@ -321,15 +248,6 @@ if __name__ == "__main__":
     coords = model.get_model(data_untrained_fit.x.float(), data_untrained_fit.edge_index)
     out = torch.cdist(coords, coords)
     dist_out = out[idx[0, :], idx[1, :]].detach().numpy()
-
-    #val_mse_loss = criterion_mse(out.float(), truth.float())
-    #PearsonR_val, _ = pearsonr(dist_truth.detach().numpy(), out.detach().numpy())
-    #PearsonR_loss_val = (1 - PearsonR_val)
-    #alpha_initial = 0.1
-    #alpha_val = min(1.0, alpha_initial + (1.0 / (val_mse_loss.item() + 1e-6)))
-    #val_total_loss = val_mse_loss + alpha_val * PearsonR_loss_val
-    #val_loss_history.append(val_total_loss)
-    #print(f'Validation Loss: {val_total_loss.item()}, Validation MSE: {val_mse_loss.item()}, Validation Pearson Correlation Loss: {PearsonR_loss_val}')
 
     SpRho_generalization = spearmanr(dist_truth, dist_out)[0]
     print(f'Optimal dSCC for generalized data: {SpRho_generalization}')
