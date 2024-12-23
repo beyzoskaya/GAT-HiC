@@ -26,7 +26,7 @@ pip install -r requirements.txt
 ----------------------------------------------------------------------------------------------------------------------------------	
 ## Key Scripts 
 
-### 1. `HiC-GAT_generalize_directly.py`
+### 1. `GAT-HiC_generalize.py`
 
 #### Purpose:
 This file focuses on the process of training a Graph Attention Network (GAT) model on Hi-C data embeddings, followed by generalizing the trained model to untrained Hi-C data. The model is trained using a combined loss function that includes:
@@ -57,18 +57,18 @@ The final loss is a weighted sum of these two components, with a dynamic weight 
 4. **Outputs**: The optimal model and the predicted structure are saved, and performance metrics (e.g., dSCC) are reported.
 
 #### Usage:
-To run the script `HiC-GAT_generalize_directly.py`, use the following command in the terminal:
+To run the script `GAT-HiC_generalize.py`, use the following command in the terminal:
 
 ```bash
-python HiC-GAT_generalize_directly.py <list_trained> <list_untrained> [-bs BATCHSIZE] [-ep EPOCHS] [-lr LEARNINGRATE] [-loss_diff_threshold LOSS_DIFF_THRESHOLD]
+python GAT-HiC_generalize.py <list_trained> <list_untrained> [-bs BATCHSIZE] [-ep EPOCHS] [-lr LEARNINGRATE] [-loss_diff_threshold LOSS_DIFF_THRESHOLD]
 ```
 
 Example:
 ```bash
-python HiC_GAT_generalize_directly.py "Hi-C_dataset/GM12878/1mb/chr18_1mb_RAWobserved.txt" "Hi-C_dataset/GM12878/500kb/chr18_500kb.RAWobserved.txt"
+python GAT-HiC_generalize.py "Hi-C_dataset/GM12878/1mb/chr18_1mb_RAWobserved.txt" "Hi-C_dataset/GM12878/500kb/chr18_500kb.RAWobserved.txt"
 ```
 
-### 2. `train_and_test_on_same_res.py`
+### 2. `GAT-HiC_same_resolution.py`
 
 #### Purpose:
 This script trains a Graph Attention Network (GAT) model on Hi-C data embeddings and then generalizes the model to untrained Hi-C data at the same resolution. It focuses on predicting pairwise genomic distances from the embeddings and adjacency matrices and evaluates the model using Spearman's correlation.
@@ -101,11 +101,11 @@ The final training objective is to minimize this contrastive loss to better capt
 4. **Outputs**: The optimal model weights are saved, and the predicted structure for the untrained Hi-C data is stored in `.pdb` format. Performance metrics (e.g., dSCC) are reported, and training loss plots are saved to visualize the training process.
 
 #### Usage:
-To run the script `train_and_test_on_same_res.py`, use the following command in the terminal:
+To run the script `GAT-HiC_same_resolution.py`, use the following command in the terminal:
 ```bash
-python train_and_test_on_same_res.py <list_trained> <list_untrained> [-bs BATCHSIZE] [-ep EPOCHS] [-lr LEARNINGRATE] [-th THRESHOLD]
+python GAT-HiC_same_resolution.py <list_trained> <list_untrained> [-bs BATCHSIZE] [-ep EPOCHS] [-lr LEARNINGRATE] [-th THRESHOLD]
 ```
 Example:
 ```bash
-python train_and_test_on_same_res.py "Hi-C_dataset/GM12878/1mb/chr18_1mb_RAWobserved.txt" "Hi-C_dataset/GM12878/1mb/chr18_1mb_RAWobserved.txt"
+python GAT-HiC_same_resolution.py "Hi-C_dataset/GM12878/1mb/chr18_1mb_RAWobserved.txt" "Hi-C_dataset/GM12878/1mb/chr18_1mb_RAWobserved.txt"
 ```
