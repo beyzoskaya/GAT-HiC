@@ -14,7 +14,7 @@ The required libraries for running this project are listed in the `requirements.
 First, clone the repository to your local machine:
 
 ```bash
-git clone https://github.com/seferlab/GAT-HiC.git
+git clone https://github.com/beyzoskaya/GAT-HiC.git
 ```
 ### Set Up the Environment
 Navigate to the project directory and install the dependencies from the `requirements.txt` file:
