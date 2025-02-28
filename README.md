@@ -20,6 +20,7 @@ git clone https://github.com/beyzoskaya/GAT-HiC.git
 Navigate to the project directory and install the dependencies from the `requirements.txt` file:
 ```bash
 cd GAT-HiC
+conda create -n gat_hic python=3.7.12 
 pip install -r requirements.txt
 ```
 
