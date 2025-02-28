@@ -65,7 +65,7 @@ python GAT-HiC_generalize.py <list_trained> <list_untrained> [-bs BATCHSIZE] [-e
 
 Example:
 ```bash
-python GAT-HiC_generalize.py "Hi-C_data/GM12878/1mb/chr18_1mb_RAWobserved.txt" "Hi-C_dataset/GM12878/500kb/chr18_500kb.RAWobserved.txt"
+python GAT-HiC_generalize.py "Hi-C_Data/GM12878/1mb/chr18_1mb_RAWobserved.txt" "Hi-C_dataset/GM12878/500kb/chr18_500kb.RAWobserved.txt"
 ```
 
 ### 2. `GAT-HiC_same_resolution.py`
@@ -107,5 +107,5 @@ python GAT-HiC_same_resolution.py <list_trained> <list_untrained> [-bs BATCHSIZE
 ```
 Example:
 ```bash
-python GAT-HiC_same_resolution.py "Hi-C_data/GM12878/1mb/chr18_1mb_RAWobserved.txt" "Hi-C_dataset/GM12878/1mb/chr18_1mb_RAWobserved.txt"
+python GAT-HiC_same_resolution.py "Hi-C_Data/GM12878/1mb/chr18_1mb_RAWobserved.txt" "Hi-C_dataset/GM12878/1mb/chr18_1mb_RAWobserved.txt"
 ```
