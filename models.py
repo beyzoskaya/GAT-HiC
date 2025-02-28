@@ -2,7 +2,6 @@ import torch
 import torch.nn.functional as F
 from torch.nn import Linear, Dropout, LeakyReLU, LayerNorm
 from torch import cdist
-from layers import SAGEConv
 from layers import CustomGATConv
 from torch_geometric.nn import GATConv, GATv2Conv, GraphNorm
 from torch.nn import BatchNorm1d
