@@ -3,7 +3,7 @@
 ## Overview
 GATHiC is a method developed to predict three-dimensional chromosome structure from Hi-C interaction data. GATHiC can generalize to unseen Hi-C datasets, enabling prediction across various cell populations, restriction enzymes, and Hi-C resolutions. This method combines the unsupervised vertex embedding technique Node2vec with an attention-based graph neural network to predict the 3D coordinates of genomic loci.
 
-## HiC Data
+## Hi-C Data
 ------------------------------------------------------------------------------------------------------------------------------------
 The Hi-C data used in this project consists of contact maps for each species, where each contact map represents the interaction frequencies between genomic loci across chromosomes. These interaction matrices are crucial for predicting the three-dimensional (3D) structure of chromosomes, providing a foundation for the GATHiC method to infer the 3D coordinates from these interaction patterns.
 
