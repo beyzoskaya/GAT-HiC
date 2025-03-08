@@ -1,7 +1,7 @@
 # GAT-HiC Efficient Reconstruction of 3D Chromosome Structure Via Graph Attention Neural Network
 ------------------------------------------------------------------------------------------------------------------------------------
 ## Overview
-GATHiC is a method developed to predict three-dimensional chromosome structure from Hi-C interaction data. GATHiC can generalize to unseen Hi-C datasets, enabling prediction across various cell populations, restriction enzymes, and Hi-C resolutions. This method combines the unsupervised vertex embedding technique Node2vec with an attention-based graph neural network to predict the 3D coordinates of genomic loci.
+GAT-HiC is a method developed to predict three-dimensional chromosome structure from Hi-C interaction data. GAT-HiC can generalize to unseen Hi-C datasets, enabling prediction across various cell populations, restriction enzymes, and Hi-C resolutions. This method combines the unsupervised vertex embedding technique Node2vec with an attention-based graph neural network to predict the 3D coordinates of genomic loci.
 
 ## Hi-C Data
 ------------------------------------------------------------------------------------------------------------------------------------
